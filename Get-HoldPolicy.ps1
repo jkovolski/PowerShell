@@ -73,17 +73,16 @@ foreach ($policy in $checkPolicy)
    ForEach ($Mbx in $MbxList) 
     {
 
-# Create custom object for output used later
-      $rc = New-Object PSObject
-      $rc | Add-Member -type NoteProperty -name PolicyName -Value $policy.Name
-      $rc | Add-Member -type NoteProperty -name InPlaceHoldEnabled -Value $policy.InPlaceHoldEnabled
-      $rc | Add-Member -type NoteProperty -name ItemHoldPeriod -Value $policy.ItemHoldPeriod
-
 # For each member of the In Place hold policy, get AD info
       $checkmb = Get-Mailbox -Identity $mbx -ErrorAction SilentlyContinue | select UserPrincipalName
       $upn = $checkmb.UserPrincipalName
       $user = Get-ADUser -filter {UserPrincipalName -eq $upn} -Properties * | Select DisplayName, Mail, SamAccountName
 
+ # Create custom object for output used later
+      $rc = New-Object PSObject
+      $rc | Add-Member -type NoteProperty -name PolicyName -Value $policy.Name
+      $rc | Add-Member -type NoteProperty -name InPlaceHoldEnabled -Value $policy.InPlaceHoldEnabled
+      $rc | Add-Member -type NoteProperty -name ItemHoldPeriod -Value $policy.ItemHoldPeriod
       $rc | Add-Member -type NoteProperty -name MemberName -Value $user.DisplayName
       $rc | Add-Member -type NoteProperty -name Email -Value $user.Mail
       $rc | Add-Member -type NoteProperty -name SamAccountName -Value $user.SamAccountName
